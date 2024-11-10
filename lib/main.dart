@@ -2,7 +2,9 @@ import 'package:wisata_candi_rismanto/data/candi_data.dart';
 import 'package:wisata_candi_rismanto/screens/detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:wisata_candi_rismanto/screens/profile_screen.dart';
+import 'package:wisata_candi_rismanto/screens/search_screen.dart';
 import 'package:wisata_candi_rismanto/screens/signin_screen.dart';
+import 'package:wisata_candi_rismanto/screens/signup_screen.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: SigninScreen(),
+      home: SearchScreen(),
     );
   }
 }

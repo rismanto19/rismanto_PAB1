@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wisata_candi_rismanto/screens/detail_screen.dart';
 
 import '../models/candi.dart';
 class ItemCard extends StatelessWidget {
@@ -9,7 +10,16 @@ final Candi candi;
   @override
   Widget build(BuildContext context) {
     // TODO: 6. implementasi routing ke detailScreen
-    return Card(
+    return InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailScreen(candi: candi),
+            ),
+          );
+        },
+      child: Card(
       // TODO: 2. Tetapkan parameter shape, margin, dan elevation dari cari
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
@@ -50,10 +60,11 @@ final Candi candi;
               candi.type,
               style: TextStyle(
                 fontSize: 12,
-              ),
-            ),
-          )
-        ],
+               ),
+             ),
+           ),
+          ],
+       ),
       ),
     );
   }

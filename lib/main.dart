@@ -8,7 +8,14 @@ import 'package:wisata_candi_rismanto/screens/search_screen.dart';
 import 'package:wisata_candi_rismanto/screens/signin_screen.dart';
 import 'package:wisata_candi_rismanto/screens/signup_screen.dart';
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(
+      initialRoute: '/',
+      routes:{
+        '/':(context) => SignUpScreen(),
+        '/SignInScreen' : (context) => SigninScreen(),
+        // '/SignUpScreen' : (context) => SignUpScreen(),
+      }
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -18,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'wisata candi',
+      title: 'Wisata Candi',
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           iconTheme: IconThemeData(color: Colors.deepPurple),
@@ -26,7 +33,7 @@ class MyApp extends StatelessWidget {
             color: Colors.deepPurple,
             fontSize: 20,
             fontWeight: FontWeight.bold,
-          )
+          ),
         ),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple).copyWith(
           primary: Colors.deepPurple,
@@ -34,10 +41,17 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MainScreen(),
+      home: MainScreen(),
+      initialRoute: '/',
+      routes: {
+        '/homescreen': (context) => const HomeScreen(),
+        '/signin': (context) => SigninScreen(),
+        '/signup' : (context) => SignUpScreen(),
+      },
     );
   }
 }
+
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -46,9 +60,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  // TODO: 1. Deklarasikan Variabel
+  // TODO: 1. Deklarasi Variabel
   int _currentIndex = 0;
-  final List<Widget> _children = [
+  final List<Widget>_children = [
     HomeScreen(),
     SearchScreen(),
     FavoriteScreen(),
@@ -60,21 +74,23 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       // TODO: 2. Buat properti body berupa widget yang ditampilkan
       body: _children[_currentIndex],
-      // TODO: 3. Buat properti bottomNaviator dengan nilai Theme
+      // TODO: 3. Buat properti bottomNavigationBar dengan nilai Theme
       bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: Colors.deepPurple[50],
-        ),
-
         // TODO: 4. Buat data dan child dari Theme
+        data: Theme.of(context).copyWith(
+            canvasColor: Colors.deepPurple[50]
+        ),
         child: BottomNavigationBar(
+          selectedItemColor: Colors.deepPurple,
+          unselectedItemColor: Colors.deepPurple[100],
+          showUnselectedLabels: true,
           currentIndex: _currentIndex,
           onTap: (index){
             setState(() {
               _currentIndex = index;
             });
           },
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home, color: Colors.deepPurple),
               label: 'Home',
@@ -84,17 +100,10 @@ class _MainScreenState extends State<MainScreen> {
               label: 'Search',
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.favorite, color: Colors.deepPurple),
-                label: 'Favorite'
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person, color: Colors.deepPurple),
-                label: 'Profile'
+              icon: Icon(Icons.favorite, color: Colors.deepPurple),
+              label: 'Favorite',
             ),
           ],
-          selectedItemColor: Colors.deepPurple,
-          unselectedItemColor: Colors.deepPurple[100],
-          showUnselectedLabels: true,
         ),
       ),
     );

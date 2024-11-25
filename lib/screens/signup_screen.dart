@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class SignUpScreen extends StatefulWidget {
@@ -11,16 +12,50 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   // TODO: 1. Deklarasikan variabel
+
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   String _errorText = '';
 
-  bool _isSignedIn = false;
-
   bool _obscurePassword = true;
 
+  //TODO: 1.Membuat method _signUp
+  Future<void> _signUp() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String name = _fullnameController.text.trim();
+    final String username = _usernameController.text.trim();
+    final String password = _passwordController.text.trim();
+    if(password.length < 8 ||
+        !password.contains(RegExp(r'[A-Z]'))||
+        !password.contains(RegExp(r'[a-z]'))||
+        !password.contains(RegExp(r'[0-9]'))||
+        !password.contains(RegExp(r'[!@#\\\$%^&*(),.?":{}|<>]'))){
+      setState(() {
+        _errorText = 'Minimal 8 karakter, kombinasi [A-Z], [a-z], [0-9], [!@#\\\$%^&*(),.?":{}|<>]';
+      });
+      return;
+    }
+    prefs.setString('fullname', name);
+    prefs.setString('username', username);
+    prefs.setString('password', password);
+    // print('* Sign Up berhasil!');
+    // print('Nama: $name');
+    // print('Nama Pengguna: $username');
+    // print('Password: $password');
+    Navigator.pushReplacementNamed(context, '/signin');
+  }
+
+  //TODO: 2.Membuat method dispose
+  @override
+  void dispose(){
+    //TODO: Implement dispose
+    _fullnameController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +111,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     // TODO: 8. Pasang ElevatedButton Sign In
                     SizedBox(height: 20),
-                    ElevatedButton(onPressed: () {}, child: Text('Sign Up')),
+                    ElevatedButton(onPressed: () {
+                      _signUp();
+                    }, child: Text('Sign Up')),
                   ],
                 )),
           ),

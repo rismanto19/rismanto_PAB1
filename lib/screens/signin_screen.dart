@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
+
 class SigninScreen extends StatefulWidget {
   SigninScreen({super.key});
 
@@ -10,14 +12,31 @@ class SigninScreen extends StatefulWidget {
 
 class _SigninScreenState extends State<SigninScreen> {
   final TextEditingController _usernameController = TextEditingController();
-
   final TextEditingController _passwordController = TextEditingController();
-
   String _errorText = '';
-
   bool _isSignedIn = false;
-
   bool _obscurePassword = true;
+
+  Future<Map<String, String>> retrieveAndDecryptDataFromPrefs(
+      Future<SharedPreferences> prefs,
+      ) async {
+    final sharedPreferences = await prefs;
+    final encryptedUsername = sharedPreferences.getString('username') ?? '';
+    final encryptedPassword = sharedPreferences.getString('password') ?? '';
+    final keyString = sharedPreferences.getString('key') ?? '';
+    final ivString = sharedPreferences.getString('iv') ??'';
+
+    final encrypt.Key key = encrypt.Key.fromBase64(keyString);
+    final iv = encrypt.IV.fromBase64(ivString);
+
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    final decryptedUsername =
+    encrypter.decrypt64(encryptedUsername, iv: iv);
+    final decryptedPassword =
+    encrypter.decrypt64 (encryptedPassword, iv: iv);
+
+    return {'username': decryptedUsername, 'password': decryptedPassword};
+  }
   void _signIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String savedUsername = prefs.getString('username') ?? '';

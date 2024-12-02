@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 
 class SignUpScreen extends StatefulWidget {
@@ -37,9 +38,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
       return;
     }
-    prefs.setString('fullname', name);
-    prefs.setString('username', username);
-    prefs.setString('password', password);
+    if(name.isNotEmpty && username.isNotEmpty && password.isNotEmpty) {
+      final encrypt.Key key = encrypt.Key.fromLength(32);
+      final iv = encrypt.IV.fromLength(16);
+
+      final encrypter = encrypt.Encrypter(encrypt.AES(key));
+      final encryptedName =encrypter.encrypt(name, iv: iv);
+      final encryptedUsername = encrypter.encrypt(username, iv: iv);
+      final encryptedPassword =encrypter.encrypt(password, iv: iv);
+
+      // simpandata pengguna di SharedPreferences
+      prefs.setString('fulname', encryptedName.base64);
+      prefs.setString('username', encryptedUsername.base64);
+      prefs.setString('password', encryptedPassword.base64);
+      prefs.setString('key' , key.base64);
+      prefs.setString('iv', iv.base64);
+    }
+      prefs.setString('fullname', name);
+      prefs.setString('username', username);
+      prefs.setString('password', password);
     // print('* Sign Up berhasil!');
     // print('Nama: $name');
     // print('Nama Pengguna: $username');
